@@ -32,10 +32,10 @@ spark.login({ accessToken: PARTICLE_ACCESS_TOKEN }, function() {
     res.data = JSON.parse(res.data);
     console.log(res);
 
-    var plotData = _.map(_.keys(res.data), function(k) {
+    var plotData = _.map(res.data, function(v, k) {
       return {
         x: [moment(res.data.published_at).utc().format('YYYY-MM-DD HH:mm')],
-        y: [res.data[k]],
+        y: [v],
         type: 'scatter',
         name: k
       };
