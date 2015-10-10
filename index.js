@@ -9,18 +9,17 @@ var _ = require('lodash'),
     moment = require('moment');
 
 var graphOptions = {
-  filename: 'wx1',
+  filename: 'wx',
   fileopt: 'extend',
-  style: {
-    type: "scatter"
-  },
   layout: {
     title: 'Weather Data',
-    xaxis: {
-      title: "Date and Time"
-    },
     yaxis: {
-      title: ""
+      title: "Humdity [%], Degrees [F]",
+      domain: [0.4, 1]
+    },
+    yaxis2: {
+      title: "Pressure [Pa]",
+      domain: [0, 0.3]
     }
   }
 };
@@ -33,12 +32,18 @@ spark.login({ accessToken: PARTICLE_ACCESS_TOKEN }, function() {
     console.log(res);
 
     var plotData = _.map(res.data, function(v, k) {
-      return {
-        x: [moment(res.data.published_at).utc().format('YYYY-MM-DD HH:mm')],
+      var result = {
+        x: [moment(res.data.published_at).format('YYYY-MM-DD HH:mm')],
         y: [v],
         type: 'scatter',
         name: k
       };
+
+      if (k === 'pa') {
+        result.yaxis = 'y2';
+      } 
+
+      return result;
     });
 
     console.log(plotData);
